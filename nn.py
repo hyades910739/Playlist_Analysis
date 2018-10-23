@@ -4,28 +4,29 @@ from keras.layers import Dense, Dropout, Flatten, Input, MaxPooling1D, Convoluti
 from keras import regularizers
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import os
 
 def main():
-	y = pd.read_csv("music2vec50.csv",index_col=0)
-	df = pd.read_csv("song_feature_32403",index_col=0)
-	df = df.drop(columns=['id','track','artist'])
-	X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.05, random_state=42)
-
-	model_input = Input(shape=(14,))
-	z = Dense(500, activation="relu")(model_input)
-	z = Dropout(0.5)(z)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+    y = pd.read_csv("music2vec50.csv",index_col=0)
+    df = pd.read_csv("song_feature_32403",index_col=0)
+    df = df.drop(columns=['id','track','artist'])
+    X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.05, random_state=42)
+    model_input = Input(shape=(14,))
+    z = Dense(500, activation="relu")(model_input)
+    z = Dropout(0.5)(z)
 	#z = Dense(500, activation="relu")(z)          
 	#z = Dropout(0.5)(z)
 	#z = Dense(400, activation="relu")(z)          
 	#z = Dropout(0.5)(z)
-	z = Dense(300, activation="relu")(z)          
-	model_output = Dense(100, activation="linear",kernel_regularizer=regularizers.l2(0.001))(z)
-	model = Model(model_input,model_output)
-	model.summary()
-	model.compile(loss='mse', optimizer='adam')
-	model.fit(X_train, y_train, epochs=30, verbose=0)
-	score = model.evaluate(X_test, y_test)
-	print('test acc: ', score[1])
+    z = Dense(300, activation="relu")(z)          
+    model_output = Dense(100, activation="linear",kernel_regularizer=regularizers.l2(0.001))(z)
+    model = Model(model_input,model_output)
+    model.summary()
+    model.compile(loss='mse', optimizer='adam')
+    model.fit(X_train, y_train, epochs=20,batch_size=50)
+    score = model.evaluate(X_test, y_test)
+    print('test acc: ', score[1])
 
 if __name__ == '__main__':
-	main()
+    main()
