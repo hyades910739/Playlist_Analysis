@@ -9,8 +9,8 @@ def read_data():
     user_playlist = defaultdict(set)
     playlist_dict = defaultdict(list)
     song_count = defaultdict(int)
-    id_song_dict = dict()
     song_set = set()
+    song_id_dict = dict()
     error = []
     reg0 = re.compile(r'(\\)*\"')
     reg1 = re.compile(r'\)|\(|’|(\\)*\'|\?')
@@ -39,10 +39,10 @@ def read_data():
                 song_id_dict[a_song] = len(song_set)
                 song_set.add(a_song)
             song_count[a_song] = song_count[a_song]  +1
-    return user_playlist,playlist_dict,song_count,id_song_dict,song_set
+    return user_playlist,playlist_dict,song_count,song_id_dict,song_set
 
 
-def searchsong(song_count=song_count,keyword=None,reg = None,title=True,artist=True,n=None):
+def searchsong(song_count=None,keyword=None,reg = None,title=True,artist=True,n=None):
     '''
     find songs by a keyword or a compiled reg exp.
     you can specify either to search by artist or song title, or both.
